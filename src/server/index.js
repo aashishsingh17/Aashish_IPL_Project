@@ -1,7 +1,9 @@
-const csvFilePath = 'src/data/matches.csv'
+const csvFilePath = 'src/data/matches.csv';
+const csvFilePath1 = 'src/data/deliveries.csv';
 import fs from 'fs';
 import pkg from 'csvtojson';
 const { csv } = pkg;
+
 
 export function matchesPlayedPerYear() {
     csv()
@@ -23,6 +25,7 @@ export function matchesPlayedPerYear() {
 }
 
 
+
 export function matchesWonPerTeamPerYear() {
     csv()
         .fromFile(csvFilePath)
@@ -31,20 +34,48 @@ export function matchesWonPerTeamPerYear() {
             var data2 = JSON.parse(data1);
             //console.log(data2);
 
-            let obj = data2.reduce(function (output, current) {
-                if (output.hasOwnProperty(current.winner)) {
-                    if (output[current.winner].hasOwnProperty(current.season))
-                        output[current.winner][current.season] = output[current.winner][current.season] + 1;
+            let matchesWonPerYear = data2.reduce(function (acc, current) {
+                if (acc.hasOwnProperty(current.winner)) {
+                    if (acc[current.winner].hasOwnProperty(current.season))
+                        acc[current.winner][current.season] = acc[current.winner][current.season] + 1;
                     else
-                        output[current.winner][current.season] = 1;
+                        acc[current.winner][current.season] = 1;
                 } else {
-                    output[current.winner] = {};
-                    output[current.winner][current.season] = 1;
+                    acc[current.winner] = {};
+                    acc[current.winner][current.season] = 1;
                 }
-                return output;
+                return acc;
             }, {});
-            //console.log(obj);  
-            fs.writeFileSync('src/public/output/matchesWonPerYear.json', JSON.stringify(obj), 'utf-8');
+            //console.log(matchesWonPerYear);
+            fs.writeFileSync('src/public/output/matchesWonPerYear.json', JSON.stringify(matchesWonPerYear), 'utf-8');
         })
 }
+
+export function extraRunsPerTeam() {
+    csv()
+        .fromFile(csvFilePath1)
+        .then((jsonObj) => {
+            var data1 = JSON.stringify(jsonObj, ['match_id', 'bowling_team', 'extra_runs']);
+            var data2 = JSON.parse(data1);
+            //console.log(data2);
+            let extraRun2016 = data2.filter(function (data) {
+                return (parseInt(data.match_id) >= 577 && parseInt(data.match_id) <= 636);
+            }).reduce(function (output, current) {
+                let extra = parseInt(current.extra_runs)
+                if (output.hasOwnProperty(current.bowling_team))
+                    output[current.bowling_team] = output[current.bowling_team] + extra;
+                else
+                    output[current.bowling_team] = extra;
+                return output;
+            }, {});
+
+            //console.log(extraRun2016);
+
+            fs.writeFileSync('src/public/output/extraRunsPerTeam2016.json', JSON.stringify(extraRun2016), 'utf-8');
+
+        })
+}
+
+
+
 
