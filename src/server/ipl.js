@@ -103,7 +103,7 @@ export function top10EconomicalBowlers2015() {
                 return result;
             }, {})
             let economicalBowlers = Object.entries(keys).sort(function (temp1, temp2) {
-                return temp1[1] - temp2[1];
+                return temp2[1] - temp1[1];
 
             }).slice(0, 10);
 
