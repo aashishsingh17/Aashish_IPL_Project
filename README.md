@@ -12,10 +12,10 @@ Output files which are of .JSON type are dumped to-
         * economicalBowlers2015.json
 
 
-## Set Up Did in Project
+## Set Up did in Project
  1. command- **git init**
  2. command- **touch .gitignore** & write .gitignore for nodejs
- 4. command- **nmp init**
+ 4. command- **npm init**
  5. command- **npm i csvtojson**
  6. open package.json file inside scipts write **"start": "node src/server/index.js"**
 
